@@ -43,6 +43,43 @@ class Nodo:
 
         return profundidade_esquerda - profundidade_direita
 
+    # Método para rotacionar para esquerda
+    def __rotacionar_esquerda(self):
+        # Guarda os valores antigos para podermos reutilizar na nova variação
+        old_self_code = self.code
+        old_self_left = self.__left
+        elem_right = self.__right
+
+        self.code = elem_right.code  # Elemento da direita se torna o nó raiz
+        # Elemento filho da direta se torna o elemento filho da direita da antiga raíz
+        self.__right = elem_right.__right
+
+        # A antiga raíz se torna filha a esquerda da nova raíz
+        self.__left = Nodo(old_self_code)
+        # O filho esquerdo da antiga raíz continua o mesmo
+        self.__left.__left = old_self_left
+        # O filho esquerdo da atual raíz (quando era filho da antiga raíz) se torna o filho direito da raíz antigo
+        self.__left.__right = elem_right.__left
+
+    # Método para rotacionar a direita
+    def __rotacionar_direita(self):
+        # Guarda os zalores antigos para podermos reutilizar na nova variação
+        old_self_code = self.code
+        elem_left = self.__left
+        elem_right = self.__right
+
+        self.code = elem_left.code  # Elemento da esquerda se torna o nó raíz
+
+        # Antiga raíz se torna elemento da direita da nova raíz
+        self.__right = Nodo(old_self_code)
+        # Elemento da direita da nova raíz recebe antigo elemento da direita da antiga raíz em sua direita
+        self.__right.__right = elem_right
+        # Elemento da direita da nova raíz recebe antigo elemento direito do antigo elemento esquerdo da antiga raíz a sua esquerda
+        self.__right.__left = elem_left.__right
+
+        # Elemento esquerdo da nova raíz recebe elemento esquerdo da antiga esquerda da antiga raíz
+        self.__left = elem_left.__left
+
     def balancear_nodo(self):
         fator_balanceamento = self.fator_balanceamento()
 
@@ -50,43 +87,21 @@ class Nodo:
             pass
         else:
             if fator_balanceamento == -2:
-                # Rotação simples para a esquerda
-
-                # Guarda os valores antigos para podermos reutilizar na nova variação
-                old_self_code = self.code
-                old_self_left = self.__left
-                elem_right = self.__right
-
-                self.code = elem_right.code  # Elemento da direita se torna o nó raiz
-                # Elemento filho da direta se torna o elemento filho da direita da antiga raíz
-                self.__right = elem_right.__right
-
-                # A antiga raíz se torna filha a esquerda da nova raíz
-                self.__left = Nodo(old_self_code)
-                # O filho esquerdo da antiga raíz continua o mesmo
-                self.__left.__left = old_self_left
-                # O filho esquerdo da atual raíz (quando era filho da antiga raíz) se torna o filho direito da raíz antigo
-                self.__left.__right = elem_right.__left
+                if self.__right.fator_balanceamento() < 0:
+                    # Rotação simples para a esquerda
+                    self.__rotacionar_esquerda()
+                else:
+                    # Rotação direita esquerda
+                    self.__right.__rotacionar_direita()
+                    self.__rotacionar_esquerda()
             elif fator_balanceamento == 2:
-                # Rotação simples para a direita
-
-                # Guarda os zalores antigos para podermos reutilizar na nova variação
-                old_self_code = self.code
-                old_self_left = self.__left
-                elem_left = self.__left
-                elem_right = self.__right
-
-                self.code = elem_left.code  # Elemento da esquerda se torna o nó raíz
-
-                # Antiga raíz se torna elemento da direita da nova raíz
-                self.__right = Nodo(old_self_code)
-                # Elemento da direita da nova raíz recebe antigo elemento da direita da antiga raíz em sua direita
-                self.__right.__right = elem_right
-                # Elemento da direita da nova raíz recebe antigo elemento direito do antigo elemento esquerdo da antiga raíz a sua esquerda
-                self.__right.__left = elem_left.__right
-
-                # Elemento esquerdo da nova raíz recebe elemento esquerdo da antiga esquerda da antiga raíz
-                self.__left = elem_left.__left
+                if self.__left.fator_balanceamento() > 0:
+                    # Rotação simples para a direita
+                    self.__rotacionar_direita()
+                else:
+                    # Rotacionar esquerda direita
+                    self.__left.__rotacionar_esquerda()
+                    self.__rotacionar_direita()
 
     # Função para adicionar um novo dado a árvore AVL
     def add(self, new_code: int) -> None:
