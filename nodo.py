@@ -126,17 +126,33 @@ class Nodo:
 
         self.__balancear_nodo()
 
+    # Método para realizar uma busca dentro da árvore
     def buscar(self, code: int):
+        # Verifica se o código que está sendo buscado é menor que o código do nó atual
         if code < self.code:
+            # Se não existir filhos, é porque o elemento não existe
             if self.__left is None and self.__right is None:
                 return None
+
+            # Se existir filhos menor que o nó atual, então vamos percorrer ele
             return self.__left.buscar(code)
+
+        # Verifica se o código que está sendo buscado é maior que o código do nó atual
         elif code > self.code:
+            # Se não existir filhos, é porque o elemento não existe
             if self.__left is None and self.__right is None:
                 return None
+
+            # Se existir filhos maior que o nó atual, então vamos percorrer ele
             return self.__right.buscar(code)
+
+        # O código do nó atual é igual ao que está sendo procurado... encontramos o elemento!
         elif code == self.code:
             return self
+
+    # Método para remover um elemento da árvore
+    def remover(self):
+        pass
 
     def printThree(self, indent=0):
         print(
