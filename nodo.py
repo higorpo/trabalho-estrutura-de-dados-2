@@ -7,8 +7,8 @@ class Nodo:
         self.__right = None
 
     @property
-    def code(self) -> str:
-        return str(self.__code)
+    def code(self) -> int:
+        return self.__code
 
     @code.setter
     def code(self, new_code) -> str:
@@ -80,7 +80,7 @@ class Nodo:
         # Elemento esquerdo da nova raíz recebe elemento esquerdo da antiga esquerda da antiga raíz
         self.__left = elem_left.__left
 
-    def balancear_nodo(self):
+    def __balancear_nodo(self):
         fator_balanceamento = self.fator_balanceamento()
 
         if fator_balanceamento in [-1, 0, 1]:
@@ -124,7 +124,19 @@ class Nodo:
                 # Já existe filho a direita, então pedimos pra ele seguir o fluxo para adicionar um novo elemento
                 self.__right.add(new_code)
 
-        self.balancear_nodo()
+        self.__balancear_nodo()
+
+    def buscar(self, code: int):
+        if code < self.code:
+            if self.__left is None and self.__right is None:
+                return None
+            return self.__left.buscar(code)
+        elif code > self.code:
+            if self.__left is None and self.__right is None:
+                return None
+            return self.__right.buscar(code)
+        elif code == self.code:
+            return self
 
     def printThree(self, indent=0):
         print(

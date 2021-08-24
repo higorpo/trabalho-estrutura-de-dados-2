@@ -9,4 +9,6 @@ raiz.add(25)
 raiz.add(33)
 raiz.add(35)
 raiz.add(38)
+
+print(raiz.buscar(38))
 raiz.printThree()
