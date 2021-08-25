@@ -51,7 +51,7 @@ class Nodo:
         elem_right = self.__right
 
         self.code = elem_right.code  # Elemento da direita se torna o nó raiz
-        # Elemento filho da direta se torna o elemento filho da direita da antiga raíz
+        # Elemento filho da direta se torna o elemento filho da direita da nova raíz
         self.__right = elem_right.__right
 
         # A antiga raíz se torna filha a esquerda da nova raíz
