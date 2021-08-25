@@ -150,9 +150,85 @@ class Nodo:
         elif code == self.code:
             return self
 
-    # Método para remover um elemento da árvore
-    def remover(self):
-        pass
+    # Procura o menor elemento de um nó
+    def procura_menor(self):
+        no1 = self
+        no2 = self.__left
+        while no2 != None:
+            no1 = no2
+            no2 = no2.__left
+        return no1
+
+    # Remove os elementos vazios da árvore através de uma recursividade
+    def __limpar_arvore(self):
+        if self.__left is not None and self.__left.code is None:
+            self.__left = None
+
+        if self.__right is not None and self.__right.code is None:
+            self.__right = None
+
+        if self.__left is not None:
+            self.__left.__limpar_arvore()
+
+        if self.__right is not None:
+            self.__right.__limpar_arvore()
+
+    # Método para remover um elemento da árvore [https://www.youtube.com/watch?v=F7_Daymw-WM]
+    def remover(self, code: int):
+        # Faz uma consulta inicial para saber se o elemento existe na minha árvore...
+        if self.buscar(code) is None:
+            return None
+
+        res = None
+        # Se o elemento a ser removido é menor que a minha raíz atual...
+        if code < self.code:
+            # Executa função recursiva de remoção do nó da esquerda
+            res = self.__left.remover(code)
+            if res == 1:
+                # Se retornar que removeu, então balanceia a árvore novamente
+                self.__balancear_nodo()
+
+        # Se o elemento a ser removido é maior ue a minha raíz atual
+        elif code > self.code:
+            # Executa função recursiva de remoção do nó da direita
+            res = self.__right.remover(code)
+            if res == 1:
+                # Se retornar que removeu, então balanceia a árvore novamente
+                self.__balancear_nodo()
+        else:
+            # Se o elemento a ser removido é o elemento da raíz atual, verificamos se um dos filhos dele é nulo
+            if self.__left is None or self.__right is None:
+                # Verifica se o filho da esquerda não é nulo
+                if self.__left is not None:
+                    # Pegamos então o filho direto a esquerda do elemento atual e ele passa a ser a nova raíz
+                    self.code = self.__left.code
+                    # Atribuímos a nova raíz o left e o right do elemento que pegamos para ser a raíz
+                    self.__left = self.__left.__left if self.__left else None
+                    self.__right = self.__left.__right if self.__left else None
+                else:
+                    # Pegamos então o filho direto a direita do elemento atual e ele passa a ser a nova raíz
+                    self.code = self.__right.code if self.__right else None
+                    # Atribuímos a nova raíz o left e o right do elemento que pegamos para ser a raíz
+                    self.__left = self.__right.__left if self.__right else None
+                    self.__right = self.__right.__right if self.__right else None
+            else:
+                # Nenhum dos dois filhos é nulo, então procuramos o menor elemento da raíz da direita
+                # e ao encontrarmos ele passa a ser a nova raíz
+                temp = self.__right.procura_menor()
+                self.code = temp.code
+                # depois removemos a sua "duplicada" do nó da direita e assim finalizamos
+                self.__right.remover(temp.code)
+                # Balanceia novamente a árvore
+                self.__balancear_nodo()
+                return 1
+
+        # Lipamos os elementos vazios da árvore
+        self.__limpar_arvore()
+
+        # Fazemos um último balanceamento se assim for necessário
+        self.__balancear_nodo()
+
+        return res
 
     def printThree(self, indent=0):
         print(
